@@ -18,19 +18,20 @@ export type MenuItem = {
 export const MenuCard: FC<Props> = ({ item, onClick }) => {
   return (
     <button
-      className="text-left border rounded-md p-2"
+      className="text-left border rounded-md px-3 pt-2"
       onClick={() => onClick(item.id)}
     >
-      <div className="flex justify-center">
+      <div className="flex justify-center relative h-24 w-28 mx-auto -z-10">
         <Image
           src={item.imagePath}
           alt="メニューの画像"
-          width={100}
-          height={100}
+          fill
+          style={{ objectFit: "cover" }}
         />
       </div>
-      <p className="mt-3">{item.name}</p>
-      <p>{item.price}円</p>
+      <p className="mt-3 text-sm h-12">
+        {item.name}({item.price}円)
+      </p>
     </button>
   );
 };

@@ -7,6 +7,7 @@ import { useState } from "react";
 import { MenuModal } from "@/components/MenuModal";
 import { CartModal } from "@/components/CartModal";
 import { OrderModal } from "@/components/OrderModal";
+import { postOrder } from "./postOrder";
 
 type Props = {
   params: {
@@ -150,13 +151,31 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
     setCartItems(newCartItems);
     setIsCartModalOpen(true);
   };
+  const insertOrder = async () => {
+    const orderPostBody = cartItems.map((item) => {
+      const menuItem = menuItems.find((menuItem) => menuItem.id === item.id);
+      return {
+        tableId: +tableId,
+        itemId: item.id,
+        name: menuItem?.name!,
+        price: menuItem?.price!,
+        count: item.count,
+      };
+    });
+    const result = await postOrder(orderPostBody);
+    if (result.status !== "ok") {
+      console.log("postする際にerrorが発生しちゃった、、");
+    }
+    setCartItems([]);
+    setIsCartModalOpen(false);
+  };
 
   const selectedMenuItem = menuItems.find(
     (item) => item.id === openModalMenuId
   );
   const selectedItemCount =
     cartItems.find((item) => item.id === openModalMenuId)?.count ?? 0;
-  const orderItems = cartItems.map((item) => {
+  const cartModalItems = cartItems.map((item) => {
     const menuItem = menuItems.find((menuItem) => menuItem.id === item.id);
     return {
       id: item.id,
@@ -206,10 +225,13 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
       </div>
       <div className="sticky bottom-0 h-20 bg-white flex gap-x-4 w-full p-4">
         <button
-          className="w-full bg-red-300 rounded-full"
+          className="w-full bg-red-300 rounded-full relative"
           onClick={openCartModal}
         >
           カート
+          <p className="absolute -top-2 right-0 w-8 h-8 text-xl rounded-full border-2 border-red-500 bg-white">
+            {cartItems.length}
+          </p>
         </button>
         <button
           className="w-full bg-slate-300 rounded-full"
@@ -230,9 +252,10 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
 
       {isCartModalOpen && (
         <CartModal
-          items={orderItems}
+          items={cartModalItems}
           closeModal={closeCartModal}
           updateCartItem={updateCartItem}
+          insertOrder={insertOrder}
         />
       )}
 

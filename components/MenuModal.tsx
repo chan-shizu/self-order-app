@@ -34,25 +34,24 @@ export const MenuModal: FC<Props> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-full text-center text-2xl px-2 py-3 border-b-2 flex">
-          <p>
+          <p className="pr-10 text-center w-full">
             {item.name}({item.price}円)
           </p>
           <button
             onClick={closeModal}
-            className="relative before:absolute before:left-0 before:top-0 before:h-[2px] before:w-[16px] bg-black"
+            className="relative flex-1 before:absolute before:right-2 before:top-4 before:h-[2px] before:w-[24px] after:absolute after:right-2 after:top-4 after:h-[2px] after:w-[24px] after:rotate-45 before:-rotate-45 before:bg-black after:bg-black"
           ></button>
         </div>
         <div className="flex mt-6 gap-x-4 px-4">
-          <div className="flex justify-center">
+          <div className="flex justify-center relative h-24 w-28">
             <Image
               src={item.imagePath}
               alt="メニューの画像"
-              width={100}
-              height={100}
+              fill
+              style={{ objectFit: "cover" }}
             />
           </div>
-          <div className="w-full">
-            {/* <p className=" text-center text-3xl">{item.price}円</p> */}
+          <div className="w-fit">
             <div className="flex mt-4 justify-center gap-x-3 items-center w-full mx-auto">
               <button
                 className="h-12 bg-sky-200 w-12 rounded-full"

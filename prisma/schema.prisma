@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+ 
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+enum Status {
+  INITIAL
+  SERVED
+}
+ 
+model Order {
+  id        Int      @id @default(autoincrement())
+  tableId   Int
+  itemId    String
+  name      String
+  price     Int
+  count     Int
+  status    Status   @default(INITIAL)
+  updatedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+}

@@ -11,9 +11,15 @@ type Props = {
   items: OrderItem[];
   closeModal: () => void;
   updateCartItem: (id: string, count: number) => void;
+  insertOrder: () => void;
 };
 
-export const CartModal: FC<Props> = ({ items, closeModal, updateCartItem }) => {
+export const CartModal: FC<Props> = ({
+  items,
+  closeModal,
+  updateCartItem,
+  insertOrder,
+}) => {
   return (
     <div className="bg-white fixed w-full h-screen top-0 left-0">
       <h2 className="text-3xl text-center py-5 border-b-2">カート内の表品</h2>
@@ -58,7 +64,12 @@ export const CartModal: FC<Props> = ({ items, closeModal, updateCartItem }) => {
         >
           戻る
         </button>
-        <button className="w-full bg-red-300 rounded-full">注文</button>
+        <button
+          className="w-full bg-red-300 rounded-full"
+          onClick={insertOrder}
+        >
+          注文
+        </button>
       </div>
     </div>
   );
