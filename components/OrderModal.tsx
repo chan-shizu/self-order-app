@@ -37,7 +37,7 @@ export const OrderModal: FC<Props> = ({ closeModal }) => {
             <th className="w-[20%]">個数</th>
           </tr>
           {menuItems.map((item) => (
-            <tr className="w-full h-8">
+            <tr className="w-full h-8" key={item.id}>
               <td className="w-[60%]">{item.name}</td>
               <td className="w-[20%]">{item.price}</td>
               <td className="w-[20%]">{item.count}</td>

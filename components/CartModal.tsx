@@ -24,7 +24,7 @@ export const CartModal: FC<Props> = ({ items, closeModal, updateCartItem }) => {
             <th className="w-[20%]">個数</th>
           </tr>
           {items.map((item) => (
-            <tr className="w-full h-10">
+            <tr className="w-full h-10" key={item.id}>
               <td className="">
                 {item.name}({item.price}円)
               </td>
