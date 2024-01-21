@@ -228,24 +228,7 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
     (async () => {
       const orders = await fetchOrders(+tableId);
       if (orders.status !== "ok") return;
-      const uniqueOrders = Array.from(
-        // @ts-ignore
-        new Map(orders.value.map((order) => [order.itemId, order])).values()
-      );
-      const ordersWithCount = uniqueOrders.map((order) => {
-        const orderCount = orders.value.filter(
-          // @ts-ignore
-          (currentOrder) => order.itemId === currentOrder.itemId
-        ).length;
-        return {
-          // @ts-ignore
-          itemId: order.itemId,
-          name: order.name,
-          price: order.price,
-          count: orderCount,
-        };
-      });
-      setOrderItems(ordersWithCount);
+      setOrderItems(orders.value);
     })();
   }, [isOrderModalOpen, isCartModalOpen]);
 
@@ -299,7 +282,6 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
       setIsLoading(false);
     }
   };
-  console.log(isLoading);
 
   const selectedMenuItem = menuItems.find(
     (item) => item.id === openModalMenuId

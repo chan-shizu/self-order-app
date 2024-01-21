@@ -18,6 +18,7 @@ export const fetchOrders = async (tableId: number) => {
         price: true,
         // @ts-ignore
         itemId: true,
+        count: true,
       },
     });
     return { status: "ok", value: orders };
