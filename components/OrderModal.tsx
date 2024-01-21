@@ -16,7 +16,7 @@ export const OrderModal: FC<Props> = ({ closeModal, orderItems }) => {
   );
 
   return (
-    <div className="bg-white fixed w-full h-screen top-0 left-0 z-20">
+    <div className="bg-white fixed w-full h-screen top-0 left-0 z-20 overflow-y-auto bottom-0">
       <h2 className="text-3xl text-center py-5 border-b-2">カート内の表品</h2>
       <div className="px-4">
         <table className="w-full mt-6">
@@ -34,7 +34,7 @@ export const OrderModal: FC<Props> = ({ closeModal, orderItems }) => {
           ))}
         </table>
       </div>
-      <div className="border-t mx-4 pt-2 flex">
+      <div className="border-t mx-4 pt-2 flex font-semibold">
         <p className="w-[60%]">合計金額</p>
         <p className="w-[40%]">{totalFee}</p>
       </div>

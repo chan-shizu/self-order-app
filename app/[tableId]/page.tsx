@@ -9,6 +9,7 @@ import { CartModal } from "@/components/CartModal";
 import { OrderItem, OrderModal } from "@/components/OrderModal";
 import { postOrders } from "./postOrders";
 import { fetchOrders } from "./fetchOrders";
+import { RotateShizuya } from "./RotateShizuya";
 
 type Props = {
   params: {
@@ -115,42 +116,54 @@ const drinkItems: MenuItem[] = [
   },
   {
     id: "3_3",
+    name: "紅茶",
+    imagePath: "/images/koucha.webp",
+    price: 0,
+  },
+  {
+    id: "3_4",
+    name: "コーヒー",
+    imagePath: "/images/coffee.jpg",
+    price: 0,
+  },
+  {
+    id: "3_5",
     name: "カルピス",
     imagePath: "/images/calpis.jpg",
     price: 0,
   },
   {
-    id: "3_4",
+    id: "3_6",
     name: "コーラ",
     imagePath: "/images/cola.jpg",
     price: 0,
   },
   {
-    id: "3_5",
+    id: "3_7",
     name: "ビール",
     imagePath: "/images/beer.jpg",
     price: 0,
   },
   {
-    id: "3_6",
+    id: "3_8",
     name: "サワー",
     imagePath: "/images/sawa.webp",
     price: 0,
   },
   {
-    id: "3_7",
+    id: "3_9",
     name: "ほろ酔い",
     imagePath: "/images/horoyoi.jpg",
     price: 0,
   },
   {
-    id: "3_8",
+    id: "3_10",
     name: "ストロング",
     imagePath: "/images/strong.png",
     price: 0,
   },
   {
-    id: "3_9",
+    id: "3_11",
     name: "ワイン",
     imagePath: "/images/wine.jpg",
     price: 0,
@@ -207,6 +220,7 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
   const [openModalMenuId, setOpenModalMenuId] = useState("");
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [cartItems, setCartItems] = useState<cartItem[]>([]);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
 
@@ -263,23 +277,29 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
     setIsCartModalOpen(true);
   };
   const insertOrder = async () => {
-    const orderPostBody = cartItems.map((item) => {
-      const menuItem = menuItems.find((menuItem) => menuItem.id === item.id);
-      return {
-        tableId: +tableId,
-        itemId: item.id,
-        name: menuItem?.name!,
-        price: menuItem?.price!,
-        count: item.count,
-      };
-    });
-    const result = await postOrders(orderPostBody);
-    if (result.status !== "ok") {
-      console.log("postする際にerrorが発生しちゃった、、");
+    setIsLoading(true);
+    try {
+      const orderPostBody = cartItems.map((item) => {
+        const menuItem = menuItems.find((menuItem) => menuItem.id === item.id);
+        return {
+          tableId: +tableId,
+          itemId: item.id,
+          name: menuItem?.name!,
+          price: menuItem?.price!,
+          count: item.count,
+        };
+      });
+      const result = await postOrders(orderPostBody);
+      if (result.status !== "ok") {
+        console.log("postする際にerrorが発生しちゃった、、");
+      }
+      setCartItems([]);
+      setIsCartModalOpen(false);
+    } finally {
+      setIsLoading(false);
     }
-    setCartItems([]);
-    setIsCartModalOpen(false);
   };
+  console.log(isLoading);
 
   const selectedMenuItem = menuItems.find(
     (item) => item.id === openModalMenuId
@@ -399,6 +419,8 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
           insertOrder={insertOrder}
         />
       )}
+
+      {isLoading && <RotateShizuya />}
 
       {isOrderModalOpen && (
         <OrderModal

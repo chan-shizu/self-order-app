@@ -21,7 +21,7 @@ export const CartModal: FC<Props> = ({
   insertOrder,
 }) => {
   return (
-    <div className="bg-white fixed w-full h-screen top-0 left-0 z-20">
+    <div className="bg-white fixed w-full min-h-screen top-0 left-0 z-20 overflow-y-auto bottom-0">
       <h2 className="text-3xl text-center py-5 border-b-2">カート内の表品</h2>
       <div className="px-4">
         <table className="w-full mt-6">
