@@ -26,7 +26,7 @@ export const MenuModal: FC<Props> = ({
 
   return (
     <div
-      className="bg-white/90 fixed w-full h-screen top-0 left-0 flex justify-center items-center"
+      className="bg-white/90 fixed w-full h-screen top-0 left-0 flex justify-center items-center z-20"
       onClick={closeModal}
     >
       <div

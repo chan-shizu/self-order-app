@@ -11,6 +11,7 @@ datasource db {
 enum Status {
   INITIAL
   SERVED
+  PAYMENT_COMPLETION
 }
  
 model Order {

@@ -1,33 +1,22 @@
 import { FC } from "react";
 
-type Props = { closeModal: () => void };
+type Props = { closeModal: () => void; orderItems: OrderItem[] };
 
-const menuItems = [
-  {
-    id: "1_1",
-    count: 3,
-    name: "チャーハン",
-    price: 0,
-  },
-  {
-    id: "1_2",
-    count: 3,
-    name: "インスタントラーメン",
-    price: 0,
-  },
-  {
-    id: "1_3",
-    count: 1,
-    name: "野菜炒め",
-    price: 0,
-  },
-];
+export type OrderItem = {
+  itemId: string;
+  name: string;
+  price: number;
+  count: number;
+};
 
-export const OrderModal: FC<Props> = ({ closeModal }) => {
-  const totalFee = menuItems.reduce((sum, item) => item.price * item.count, 0);
+export const OrderModal: FC<Props> = ({ closeModal, orderItems }) => {
+  const totalFee = orderItems.reduce(
+    (sum, item) => sum + item.price * item.count,
+    0
+  );
 
   return (
-    <div className="bg-white fixed w-full h-screen top-0 left-0">
+    <div className="bg-white fixed w-full h-screen top-0 left-0 z-20">
       <h2 className="text-3xl text-center py-5 border-b-2">カート内の表品</h2>
       <div className="px-4">
         <table className="w-full mt-6">
@@ -36,8 +25,8 @@ export const OrderModal: FC<Props> = ({ closeModal }) => {
             <th className="w-[20%]">値段</th>
             <th className="w-[20%]">個数</th>
           </tr>
-          {menuItems.map((item) => (
-            <tr className="w-full h-8" key={item.id}>
+          {orderItems.map((item) => (
+            <tr className="w-full h-8" key={item.itemId}>
               <td className="w-[60%]">{item.name}</td>
               <td className="w-[20%]">{item.price}</td>
               <td className="w-[20%]">{item.count}</td>

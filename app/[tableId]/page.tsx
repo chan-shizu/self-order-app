@@ -3,11 +3,12 @@
 import { SideBar } from "@/components/SideBar";
 import { MenuCard, MenuItem } from "@/components/MenuCard";
 import { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MenuModal } from "@/components/MenuModal";
 import { CartModal } from "@/components/CartModal";
-import { OrderModal } from "@/components/OrderModal";
-import { postOrder } from "./postOrder";
+import { OrderItem, OrderModal } from "@/components/OrderModal";
+import { postOrders } from "./postOrders";
+import { fetchOrders } from "./fetchOrders";
 
 type Props = {
   params: {
@@ -18,95 +19,179 @@ type Props = {
 const foodItems: MenuItem[] = [
   {
     id: "1_1",
+    name: "野菜炒め",
+    imagePath: "/images/yasai_itame.webp",
+    price: 0,
+  },
+  {
+    id: "1_2",
+    name: "目玉焼き",
+    imagePath: "/images/medama_yaki.jpg",
+    price: 0,
+  },
+  {
+    id: "1_3",
     name: "チャーハン",
     imagePath: "/images/cha-han.jpg",
     price: 0,
   },
   {
-    id: "1_2",
+    id: "1_4",
+    name: "卵かけご飯",
+    imagePath: "/images/tamagokake_gohan.webp",
+    price: 0,
+  },
+  {
+    id: "1_5",
     name: "インスタントラーメン",
     imagePath: "/images/ra-men.jpg",
     price: 0,
   },
   {
-    id: "1_3",
-    name: "野菜炒め",
-    imagePath: "/images/cha-han.jpg",
-    price: 0,
-  },
-  {
-    id: "1_4",
-    name: "適当に肉を焼いたもの",
-    imagePath: "/images/cha-han.jpg",
-    price: 0,
-  },
-  {
-    id: "1_5",
-    name: "甘い系のお菓子",
-    imagePath: "/images/cha-han.jpg",
-    price: 0,
-  },
-  {
     id: "1_6",
-    name: "ポテチなど",
-    imagePath: "/images/cha-han.jpg",
+    name: "おにぎり",
+    imagePath: "/images/onigiri.jpg",
     price: 0,
   },
   {
     id: "1_7",
-    name: "甘い系のお菓子",
-    imagePath: "/images/cha-han.jpg",
+    name: "ピザ",
+    imagePath: "/images/pizza.jpeg",
     price: 0,
   },
   {
     id: "1_8",
+    name: "サンドウィッチ",
+    imagePath: "/images/sandwich.jpg",
+    price: 0,
+  },
+];
+
+const snackItems: MenuItem[] = [
+  {
+    id: "2_1",
+    name: "甘い系のお菓子",
+    imagePath: "/images/amai_okashi.jpg",
+    price: 0,
+  },
+  {
+    id: "2_2",
     name: "ポテチなど",
-    imagePath: "/images/cha-han.jpg",
+    imagePath: "/images/potechi.jpg",
+    price: 0,
+  },
+  {
+    id: "2_3",
+    name: "ポップコーン",
+    imagePath: "/images/popcorn.jpg",
+    price: 0,
+  },
+  {
+    id: "2_4",
+    name: "ケーキ",
+    imagePath: "/images/cake.webp",
+    price: 0,
+  },
+  {
+    id: "2_5",
+    name: "シュークリームとか",
+    imagePath: "/images/shu-cream.jpg",
     price: 0,
   },
 ];
 
 const drinkItems: MenuItem[] = [
   {
-    id: "2_1",
-    name: "水道水",
-    imagePath: "/images/cha-han.jpg",
+    id: "3_1",
+    name: "水",
+    imagePath: "/images/water.jpg",
     price: 0,
   },
   {
-    id: "2_2",
+    id: "3_2",
     name: "お茶",
-    imagePath: "/images/cha-han.jpg",
+    imagePath: "/images/ocha.jpg",
     price: 0,
   },
   {
-    id: "2_3",
+    id: "3_3",
     name: "カルピス",
-    imagePath: "/images/cha-han.jpg",
+    imagePath: "/images/calpis.jpg",
     price: 0,
   },
   {
-    id: "2_4",
+    id: "3_4",
     name: "コーラ",
-    imagePath: "/images/cha-han.jpg",
+    imagePath: "/images/cola.jpg",
     price: 0,
   },
   {
-    id: "2_5",
+    id: "3_5",
     name: "ビール",
-    imagePath: "/images/cha-han.jpg",
+    imagePath: "/images/beer.jpg",
     price: 0,
   },
   {
-    id: "2_6",
-    name: "サワー系",
-    imagePath: "/images/cha-han.jpg",
+    id: "3_6",
+    name: "サワー",
+    imagePath: "/images/sawa.webp",
     price: 0,
   },
   {
-    id: "2_7",
+    id: "3_7",
+    name: "ほろ酔い",
+    imagePath: "/images/horoyoi.jpg",
+    price: 0,
+  },
+  {
+    id: "3_8",
+    name: "ストロング",
+    imagePath: "/images/strong.png",
+    price: 0,
+  },
+  {
+    id: "3_9",
     name: "ワイン",
-    imagePath: "/images/cha-han.jpg",
+    imagePath: "/images/wine.jpg",
+    price: 0,
+  },
+];
+
+const otherItems: MenuItem[] = [
+  {
+    id: "4_1",
+    name: "タオル",
+    imagePath: "/images/towel.jpg",
+    price: 0,
+  },
+  {
+    id: "4_2",
+    name: "クッション",
+    imagePath: "/images/cushion.jpg",
+    price: 0,
+  },
+  {
+    id: "4_3",
+    name: "プロジェクター",
+    imagePath: "/images/projector.jpg",
+    price: 0,
+  },
+  {
+    id: "4_4",
+    name: "ギター",
+    imagePath: "/images/akogi.jpg",
+    price: 0,
+  },
+  {
+    id: "4_5",
+    name: "キーボード",
+    imagePath: "/images/keyboard.jpg",
+    price: 0,
+  },
+  {
+    id: "4_6",
+    name: "スマイル",
+    imagePath: "/images/smile.jpg",
     price: 0,
   },
 ];
@@ -116,13 +201,39 @@ type cartItem = {
   count: number;
 };
 
-const menuItems = foodItems.concat(drinkItems);
+const menuItems = foodItems.concat(drinkItems, snackItems, otherItems);
 
 const Page: NextPage<Props> = ({ params: { tableId } }) => {
   const [openModalMenuId, setOpenModalMenuId] = useState("");
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [cartItems, setCartItems] = useState<cartItem[]>([]);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const orders = await fetchOrders(+tableId);
+      if (orders.status !== "ok") return;
+      const uniqueOrders = Array.from(
+        // @ts-ignore
+        new Map(orders.value.map((order) => [order.itemId, order])).values()
+      );
+      const ordersWithCount = uniqueOrders.map((order) => {
+        const orderCount = orders.value.filter(
+          // @ts-ignore
+          (currentOrder) => order.itemId === currentOrder.itemId
+        ).length;
+        return {
+          // @ts-ignore
+          itemId: order.itemId,
+          name: order.name,
+          price: order.price,
+          count: orderCount,
+        };
+      });
+      setOrderItems(ordersWithCount);
+    })();
+  }, [isOrderModalOpen, isCartModalOpen]);
 
   const handleMenuCardOnClick = (id: string) => {
     setOpenModalMenuId(id);
@@ -162,7 +273,7 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
         count: item.count,
       };
     });
-    const result = await postOrder(orderPostBody);
+    const result = await postOrders(orderPostBody);
     if (result.status !== "ok") {
       console.log("postする際にerrorが発生しちゃった、、");
     }
@@ -194,11 +305,12 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
         </a>
       </header>
       {/* <div className="flex"> */}
-      <div className="mt-3 sticky top-0 bg-white/90 pt-3">
+      <div className="sticky top-0 bg-white z-10 pt-3">
         <SideBar />
       </div>
       <div className="px-2">
-        <section id="food-section" className="pt-10">
+        <section className="pt-3 relative">
+          <div className="absolute -mt-20" id="food-section"></div>
           <h2 className="text-3xl border-b-2 pb-2">ごはん</h2>
           <div className="w-full grid grid-cols-2 gap-x-2 gap-y-4 mt-2">
             {foodItems.map((item) => (
@@ -210,10 +322,37 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
             ))}
           </div>
         </section>
-        <section id="drink-section" className="pt-10">
+        <section className="pt-7 relative">
+          <div className="absolute -mt-20" id="snack-section"></div>
+          <h2 className="text-3xl border-b-2 pb-2">おかし</h2>
+          <div className="w-full grid grid-cols-2 gap-x-2 gap-y-4 mt-2">
+            {snackItems.map((item) => (
+              <MenuCard
+                key={item.id}
+                item={item}
+                onClick={handleMenuCardOnClick}
+              />
+            ))}
+          </div>
+        </section>
+        <section className="pt-7 relative">
+          <div className="absolute -mt-20" id="drink-section"></div>
           <h2 className="text-3xl border-b-2 pb-2">飲み物</h2>
           <div className="w-full grid grid-cols-2 gap-x-2 gap-y-4 mt-2">
             {drinkItems.map((item) => (
+              <MenuCard
+                key={item.id}
+                item={item}
+                onClick={handleMenuCardOnClick}
+              />
+            ))}
+          </div>
+        </section>
+        <section className="pt-7 relative">
+          <div className="absolute -mt-20" id="other-section"></div>
+          <h2 className="text-3xl border-b-2 pb-2">その他</h2>
+          <div className="w-full grid grid-cols-2 gap-x-2 gap-y-4 mt-2">
+            {otherItems.map((item) => (
               <MenuCard
                 key={item.id}
                 item={item}
@@ -229,9 +368,11 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
           onClick={openCartModal}
         >
           カート
-          <p className="absolute -top-2 right-0 w-8 h-8 text-xl rounded-full border-2 border-red-500 bg-white">
-            {cartItems.length}
-          </p>
+          {cartItems.length > 0 && (
+            <p className="absolute -top-2 right-0 w-8 h-8 text-xl rounded-full border-2 border-red-500 bg-white">
+              {cartItems.length}
+            </p>
+          )}
         </button>
         <button
           className="w-full bg-slate-300 rounded-full"
@@ -260,7 +401,10 @@ const Page: NextPage<Props> = ({ params: { tableId } }) => {
       )}
 
       {isOrderModalOpen && (
-        <OrderModal closeModal={() => setIsOrderModalOpen(false)} />
+        <OrderModal
+          closeModal={() => setIsOrderModalOpen(false)}
+          orderItems={orderItems}
+        />
       )}
     </div>
   );
